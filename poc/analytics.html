@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <title>Analytics Dashboard - Support System</title>
+ <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+ <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+ <style>
+  * {
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+  }
+
+  body {
+   font-family: 'Inter', sans-serif;
+   background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+   min-height: 100vh;
+   color: #fff;
+  }
+
+  .container {
+   max-width: 1400px;
+   margin: 0 auto;
+   padding: 30px;
+  }
+
+  /* Header */
+  .header {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin-bottom: 40px;
+  }
+
+  .header h1 {
+   font-size: 28px;
+   font-weight: 700;
+   background: linear-gradient(135deg, #f39c12, #e74c3c);
+   -webkit-background-clip: text;
+   -webkit-text-fill-color: transparent;
+   background-clip: text;
+  }
+
+  .header-actions {
+   display: flex;
+   gap: 15px;
+  }
+
+  .refresh-btn {
+   padding: 12px 24px;
+   border-radius: 10px;
+   border: none;
+   background: linear-gradient(135deg, #3498db, #2980b9);
+   color: #fff;
+   font-weight: 600;
+   cursor: pointer;
+   display: flex;
+   align-items: center;
+   gap: 8px;
+  }
+
+  .refresh-btn:hover {
+   transform: scale(1.02);
+  }
+
+  .time-range {
+   padding: 12px 20px;
+   border-radius: 10px;
+   border: 1px solid rgba(255, 255, 255, 0.2);
+   background: rgba(255, 255, 255, 0.05);
+   color: #fff;
+   font-size: 14px;
+  }
+
+  /* KPI Cards */
+  .kpi-grid {
+   display: grid;
+   grid-template-columns: repeat(4, 1fr);
+   gap: 20px;
+   margin-bottom: 30px;
+  }
+
+  .kpi-card {
+   background: rgba(255, 255, 255, 0.05);
+   border-radius: 20px;
+   padding: 25px;
+   border: 1px solid rgba(255, 255, 255, 0.1);
+   transition: all 0.3s ease;
+  }
+
+  .kpi-card:hover {
+   transform: translateY(-5px);
+   border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .kpi-card .icon {
+   width: 50px;
+   height: 50px;
+   border-radius: 12px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   font-size: 24px;
+   margin-bottom: 15px;
+  }
+
+  .kpi-card .label {
+   font-size: 14px;
+   color: rgba(255, 255, 255, 0.6);
+   margin-bottom: 8px;
+  }
+
+  .kpi-card .value {
+   font-size: 32px;
+   font-weight: 700;
+  }
+
+  .kpi-card .change {
+   font-size: 14px;
+   margin-top: 10px;
+   display: flex;
+   align-items: center;
+   gap: 5px;
+  }
+
+  .kpi-card .change.positive {
+   color: #2ecc71;
+  }
+
+  .kpi-card .change.negative {
+   color: #e74c3c;
+  }
+
+  /* Card Colors */
+  .kpi-card.blue .icon {
+   background: rgba(52, 152, 219, 0.2);
+   color: #3498db;
+  }
+
+  .kpi-card.green .icon {
+   background: rgba(46, 204, 113, 0.2);
+   color: #2ecc71;
+  }
+
+  .kpi-card.orange .icon {
+   background: rgba(243, 156, 18, 0.2);
+   color: #f39c12;
+  }
+
+  .kpi-card.purple .icon {
+   background: rgba(155, 89, 182, 0.2);
+   color: #9b59b6;
+  }
+
+  .kpi-card.red .icon {
+   background: rgba(231, 76, 60, 0.2);
+   color: #e74c3c;
+  }
+
+  .kpi-card.cyan .icon {
+   background: rgba(26, 188, 156, 0.2);
+   color: #1abc9c;
+  }
+
+  /* Charts Grid */
+  .charts-grid {
+   display: grid;
+   grid-template-columns: 2fr 1fr;
+   gap: 20px;
+   margin-bottom: 30px;
+  }
+
+  .chart-card {
+   background: rgba(255, 255, 255, 0.05);
+   border-radius: 20px;
+   padding: 25px;
+   border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .chart-card h3 {
+   font-size: 18px;
+   margin-bottom: 20px;
+   display: flex;
+   align-items: center;
+   gap: 10px;
+  }
+
+  .chart-container {
+   height: 300px;
+   position: relative;
+  }
+
+  /* Tables */
+  .table-card {
+   background: rgba(255, 255, 255, 0.05);
+   border-radius: 20px;
+   padding: 25px;
+   border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .table-card h3 {
+   font-size: 18px;
+   margin-bottom: 20px;
+  }
+
+  table {
+   width: 100%;
+   border-collapse: collapse;
+  }
+
+  th,
+  td {
+   padding: 15px;
+   text-align: left;
+   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  th {
+   color: rgba(255, 255, 255, 0.6);
+   font-weight: 500;
+   font-size: 12px;
+   text-transform: uppercase;
+   letter-spacing: 1px;
+  }
+
+  td {
+   font-size: 14px;
+  }
+
+  .status-badge {
+   padding: 6px 12px;
+   border-radius: 20px;
+   font-size: 12px;
+   font-weight: 600;
+  }
+
+  .status-badge.resolved {
+   background: rgba(46, 204, 113, 0.2);
+   color: #2ecc71;
+  }
+
+  .status-badge.active {
+   background: rgba(52, 152, 219, 0.2);
+   color: #3498db;
+  }
+
+  .status-badge.pending {
+   background: rgba(243, 156, 18, 0.2);
+   color: #f39c12;
+  }
+
+  .status-badge.escalated {
+   background: rgba(231, 76, 60, 0.2);
+   color: #e74c3c;
+  }
+
+  .priority-dot {
+   width: 10px;
+   height: 10px;
+   border-radius: 50%;
+   display: inline-block;
+   margin-right: 8px;
+  }
+
+  .priority-dot.high {
+   background: #e74c3c;
+  }
+
+  .priority-dot.medium {
+   background: #f39c12;
+  }
+
+  .priority-dot.low {
+   background: #2ecc71;
+  }
+
+  /* Bottom Grid */
+  .bottom-grid {
+   display: grid;
+   grid-template-columns: repeat(3, 1fr);
+   gap: 20px;
+  }
+
+  /* Loading Overlay */
+  .loading {
+   position: fixed;
+   top: 0;
+   left: 0;
+   right: 0;
+   bottom: 0;
+   background: rgba(0, 0, 0, 0.8);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   z-index: 1000;
+  }
+
+  .loading.hidden {
+   display: none;
+  }
+
+  .spinner {
+   width: 50px;
+   height: 50px;
+   border: 3px solid rgba(255, 255, 255, 0.1);
+   border-top-color: #3498db;
+   border-radius: 50%;
+   animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+   to {
+    transform: rotate(360deg);
+   }
+  }
+
+  /* Responsive */
+  @media (max-width: 1200px) {
+   .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+   }
+
+   .charts-grid {
+    grid-template-columns: 1fr;
+   }
+
+   .bottom-grid {
+    grid-template-columns: 1fr;
+   }
+  }
+ </style>
+</head>
+
+<body>
+ <div class="loading" id="loading">
+  <div class="spinner"></div>
+ </div>
+
+ <div class="container">
+  <header class="header">
+   <h1>📊 Support Analytics Dashboard</h1>
+   <div class="header-actions">
+    <select class="time-range" id="timeRange">
+     <option value="today">Today</option>
+     <option value="week" selected>This Week</option>
+     <option value="month">This Month</option>
+    </select>
+    <button class="refresh-btn" onclick="loadData()">
+     🔄 Refresh
+    </button>
+   </div>
+  </header>
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid">
+   <div class="kpi-card blue">
+    <div class="icon">🎫</div>
+    <div class="label">Total Incidences</div>
+    <div class="value" id="totalIncidences">0</div>
+    <div class="change positive" id="incidenceChange">↑ 12% vs last week</div>
+   </div>
+   <div class="kpi-card green">
+    <div class="icon">✅</div>
+    <div class="label">Resolution Rate</div>
+    <div class="value" id="resolutionRate">0%</div>
+    <div class="change positive">↑ 5% improvement</div>
+   </div>
+   <div class="kpi-card orange">
+    <div class="icon">⏱️</div>
+    <div class="label">Avg Resolution Time</div>
+    <div class="value" id="avgResolutionTime">0m</div>
+    <div class="change negative">↓ 2m faster</div>
+   </div>
+   <div class="kpi-card purple">
+    <div class="icon">🛒</div>
+    <div class="label">Conversion Rate</div>
+    <div class="value" id="conversionRate">0%</div>
+    <div class="change positive">↑ 8% increase</div>
+   </div>
+  </div>
+
+  <!-- Second Row KPIs -->
+  <div class="kpi-grid">
+   <div class="kpi-card cyan">
+    <div class="icon">🤖</div>
+    <div class="label">Self-Serve Rate</div>
+    <div class="value" id="selfServeRate">0%</div>
+    <div class="change positive">↑ Cost savings</div>
+   </div>
+   <div class="kpi-card red">
+    <div class="icon">🔥</div>
+    <div class="label">Avg Friction Score</div>
+    <div class="value" id="avgFrictionScore">0</div>
+    <div class="change negative">↓ Lower is better</div>
+   </div>
+   <div class="kpi-card blue">
+    <div class="icon">💬</div>
+    <div class="label">Chat Sessions</div>
+    <div class="value" id="chatSessions">0</div>
+    <div class="change positive">Active chats</div>
+   </div>
+   <div class="kpi-card green">
+    <div class="icon">📞</div>
+    <div class="label">Premium Support</div>
+    <div class="value" id="premiumSupport">0</div>
+    <div class="change positive">High-value orders</div>
+   </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="charts-grid">
+   <div class="chart-card">
+    <h3>📈 Daily Incidences & Resolutions</h3>
+    <div class="chart-container">
+     <canvas id="dailyChart"></canvas>
+    </div>
+   </div>
+   <div class="chart-card">
+    <h3>📊 Channel Distribution</h3>
+    <div class="chart-container">
+     <canvas id="channelChart"></canvas>
+    </div>
+   </div>
+  </div>
+
+  <!-- Recent Incidences Table -->
+  <div class="table-card" style="margin-bottom: 30px;">
+   <h3>🎫 Recent Incidences</h3>
+   <table>
+    <thead>
+     <tr>
+      <th>ID</th>
+      <th>User</th>
+      <th>Event Type</th>
+      <th>Order Value</th>
+      <th>Channel</th>
+      <th>Friction Score</th>
+      <th>Status</th>
+      <th>Priority</th>
+     </tr>
+    </thead>
+    <tbody id="incidencesTable">
+     <!-- Dynamic content -->
+    </tbody>
+   </table>
+  </div>
+
+  <!-- Bottom Grid -->
+  <div class="bottom-grid">
+   <div class="chart-card">
+    <h3>🎯 Outcomes Distribution</h3>
+    <div class="chart-container">
+     <canvas id="outcomeChart"></canvas>
+    </div>
+   </div>
+   <div class="chart-card">
+    <h3>📍 Top Friction Screens</h3>
+    <div id="frictionScreens">
+     <div
+      style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <span>Checkout</span>
+      <span style="color: #e74c3c;">42%</span>
+     </div>
+     <div
+      style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <span>Payment</span>
+      <span style="color: #f39c12;">28%</span>
+     </div>
+     <div
+      style="display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <span>Menu Selection</span>
+      <span style="color: #2ecc71;">18%</span>
+     </div>
+     <div style="display: flex; justify-content: space-between; padding: 12px 0;">
+      <span>Cart</span>
+      <span style="color: #3498db;">12%</span>
+     </div>
+    </div>
+   </div>
+   <div class="chart-card">
+    <h3>👥 Top Agents</h3>
+    <div id="topAgents">
+     <div
+      style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <span>🥇 Priya Sharma</span>
+      <span style="color: #2ecc71;">32 resolved</span>
+     </div>
+     <div
+      style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <span>🥈 Rahul Verma</span>
+      <span style="color: #2ecc71;">28 resolved</span>
+     </div>
+     <div
+      style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <span>🥉 Amit Kumar</span>
+      <span style="color: #2ecc71;">24 resolved</span>
+     </div>
+     <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0;">
+      <span>4. Sneha Patel</span>
+      <span style="color: #2ecc71;">21 resolved</span>
+     </div>
+    </div>
+   </div>
+  </div>
+ </div>
+
+ <script>
+  const API_BASE = 'http://localhost:8000';
+  let dailyChart, channelChart, outcomeChart;
+
+  // Initialize charts
+  function initCharts() {
+   // Daily Incidences Chart
+   const dailyCtx = document.getElementById('dailyChart').getContext('2d');
+   dailyChart = new Chart(dailyCtx, {
+    type: 'line',
+    data: {
+     labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+     datasets: [
+      {
+       label: 'Created',
+       data: [12, 19, 15, 25, 22, 18, 14],
+       borderColor: '#3498db',
+       backgroundColor: 'rgba(52,152,219,0.1)',
+       fill: true,
+       tension: 0.4
+      },
+      {
+       label: 'Resolved',
+       data: [10, 15, 14, 22, 20, 16, 12],
+       borderColor: '#2ecc71',
+       backgroundColor: 'rgba(46,204,113,0.1)',
+       fill: true,
+       tension: 0.4
+      }
+     ]
+    },
+    options: {
+     responsive: true,
+     maintainAspectRatio: false,
+     plugins: {
+      legend: {
+       labels: { color: '#fff' }
+      }
+     },
+     scales: {
+      x: {
+       ticks: { color: '#888' },
+       grid: { color: 'rgba(255,255,255,0.05)' }
+      },
+      y: {
+       ticks: { color: '#888' },
+       grid: { color: 'rgba(255,255,255,0.05)' }
+      }
+     }
+    }
+   });
+
+   // Channel Distribution Chart
+   const channelCtx = document.getElementById('channelChart').getContext('2d');
+   channelChart = new Chart(channelCtx, {
+    type: 'doughnut',
+    data: {
+     labels: ['Self-Serve', 'Chat Only', 'Chat + Call'],
+     datasets: [{
+      data: [45, 35, 20],
+      backgroundColor: ['#3498db', '#2ecc71', '#9b59b6'],
+      borderWidth: 0
+     }]
+    },
+    options: {
+     responsive: true,
+     maintainAspectRatio: false,
+     plugins: {
+      legend: {
+       position: 'bottom',
+       labels: { color: '#fff', padding: 20 }
+      }
+     }
+    }
+   });
+
+   // Outcomes Chart
+   const outcomeCtx = document.getElementById('outcomeChart').getContext('2d');
+   outcomeChart = new Chart(outcomeCtx, {
+    type: 'bar',
+    data: {
+     labels: ['Converted', 'Resolved', 'Abandoned', 'Escalated'],
+     datasets: [{
+      data: [45, 30, 15, 10],
+      backgroundColor: ['#2ecc71', '#3498db', '#f39c12', '#e74c3c']
+     }]
+    },
+    options: {
+     responsive: true,
+     maintainAspectRatio: false,
+     plugins: {
+      legend: { display: false }
+     },
+     scales: {
+      x: {
+       ticks: { color: '#888' },
+       grid: { display: false }
+      },
+      y: {
+       ticks: { color: '#888' },
+       grid: { color: 'rgba(255,255,255,0.05)' }
+      }
+     }
+    }
+   });
+  }
+
+  // Load data from API
+  async function loadData() {
+   document.getElementById('loading').classList.remove('hidden');
+
+   try {
+    // Fetch KPIs
+    const kpisResponse = await fetch(`${API_BASE}/api/v1/analytics/kpis`);
+    const kpis = await kpisResponse.json();
+
+    // Update KPI cards
+    document.getElementById('totalIncidences').textContent = kpis.total_incidences || 125;
+    document.getElementById('resolutionRate').textContent = `${kpis.resolution_rate || 78}%`;
+    document.getElementById('avgResolutionTime').textContent = `${kpis.avg_resolution_time_minutes || 12}m`;
+    document.getElementById('conversionRate').textContent = `${kpis.conversion_rate || 34}%`;
+    document.getElementById('selfServeRate').textContent = `${kpis.self_serve_rate || 45}%`;
+    document.getElementById('avgFrictionScore').textContent = kpis.avg_friction_score || 42;
+    document.getElementById('chatSessions').textContent = kpis.chat_sessions || 68;
+    document.getElementById('premiumSupport').textContent = kpis.premium_support || 25;
+
+    // Load sample incidences for table
+    loadIncidencesTable();
+
+   } catch (error) {
+    console.error('Error loading data:', error);
+    // Use mock data
+    document.getElementById('totalIncidences').textContent = '125';
+    document.getElementById('resolutionRate').textContent = '78%';
+    document.getElementById('avgResolutionTime').textContent = '12m';
+    document.getElementById('conversionRate').textContent = '34%';
+    document.getElementById('selfServeRate').textContent = '45%';
+    document.getElementById('avgFrictionScore').textContent = '42';
+    document.getElementById('chatSessions').textContent = '68';
+    document.getElementById('premiumSupport').textContent = '25';
+    loadIncidencesTable();
+   }
+
+   document.getElementById('loading').classList.add('hidden');
+  }
+
+  // Load incidences table with sample data
+  function loadIncidencesTable() {
+   const sampleData = [
+    { id: 'INC-001', user: 'Rahul Sharma', event: 'Wedding', value: '₹55,000', channel: 'Chat + Call', friction: 85, status: 'active', priority: 'high' },
+    { id: 'INC-002', user: 'Priya Patel', event: 'Birthday', value: '₹12,000', channel: 'Chat', friction: 42, status: 'resolved', priority: 'medium' },
+    { id: 'INC-003', user: 'Amit Kumar', event: 'Corporate', value: '₹75,000', channel: 'Chat + Call', friction: 65, status: 'pending', priority: 'high' },
+    { id: 'INC-004', user: 'Sneha Singh', event: 'Casual', value: '₹3,500', channel: 'Self-Serve', friction: 20, status: 'resolved', priority: 'low' },
+    { id: 'INC-005', user: 'Vikram Reddy', event: 'Wedding', value: '₹95,000', channel: 'Chat + Call', friction: 78, status: 'escalated', priority: 'high' },
+   ];
+
+   const tbody = document.getElementById('incidencesTable');
+   tbody.innerHTML = sampleData.map(inc => `
+                <tr>
+                    <td><strong>${inc.id}</strong></td>
+                    <td>${inc.user}</td>
+                    <td>${inc.event}</td>
+                    <td>${inc.value}</td>
+                    <td>${inc.channel}</td>
+                    <td style="color: ${inc.friction > 60 ? '#e74c3c' : inc.friction > 40 ? '#f39c12' : '#2ecc71'}">${inc.friction}</td>
+                    <td><span class="status-badge ${inc.status}">${inc.status}</span></td>
+                    <td><span class="priority-dot ${inc.priority}"></span>${inc.priority}</td>
+                </tr>
+            `).join('');
+  }
+
+  // Initialize on load
+  window.onload = function () {
+   initCharts();
+   loadData();
+  };
+ </script>
+</body>
+
+</html>

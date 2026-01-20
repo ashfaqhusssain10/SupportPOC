@@ -1,0 +1,171 @@
+{
+  "timestamp": "2026-01-20T13:38:42.805086",
+  "account_config": {
+    "organisation_id": 932159069806059153,
+    "organisation_domain": "craftmyplate-932159069325046075.myfreshworks.com",
+    "account_id": 1088674392196089,
+    "account_domain": "craftmyplate-932159069325046075-cefb1bc4cb2de9817685613.freshchat.com",
+    "app_id": "f2dca196-21d5-454c-bc40-d4b5e2e90224",
+    "bundle_id": 932159070187740824,
+    "bundle_type": "sales360",
+    "plan_type": "Sales360 Messaging Enterprise Yearly 2020",
+    "datacenter": "IND",
+    "web_chat_id": "52973c6d-5808-4762-beb2-5c1561e8420d"
+  },
+  "results": [
+    {
+      "status": "pass",
+      "category": "Credentials",
+      "message": "Freshchat App ID configured",
+      "details": {
+        "value": "f2dca196..."
+      },
+      "timestamp": "2026-01-20T13:38:40.944277"
+    },
+    {
+      "status": "pass",
+      "category": "Credentials",
+      "message": "Freshchat API Key configured",
+      "details": {
+        "value": "eyJraWQiOiJjdXN..."
+      },
+      "timestamp": "2026-01-20T13:38:40.944277"
+    },
+    {
+      "status": "pass",
+      "category": "Credentials",
+      "message": "Freshdesk API Key configured",
+      "details": {
+        "value": "ilZzuny3l4..."
+      },
+      "timestamp": "2026-01-20T13:38:40.944277"
+    },
+    {
+      "status": "pass",
+      "category": "Credentials",
+      "message": "Freshdesk Domain configured",
+      "details": {
+        "value": "test2288.freshdesk.com"
+      },
+      "timestamp": "2026-01-20T13:38:40.944277"
+    },
+    {
+      "status": "pass",
+      "category": "Account",
+      "message": "Freshchat account configuration retrieved",
+      "details": null,
+      "timestamp": "2026-01-20T13:38:41.099931"
+    },
+    {
+      "status": "info",
+      "category": "Config",
+      "message": "app_id: f2dca196-21d5-454c-bc40-d4b5e2e90224",
+      "details": null,
+      "timestamp": "2026-01-20T13:38:41.099931"
+    },
+    {
+      "status": "info",
+      "category": "Config",
+      "message": "account_domain: craftmyplate-932159069325046075-cefb1bc4cb2de9817685613.freshchat.com",
+      "details": null,
+      "timestamp": "2026-01-20T13:38:41.099931"
+    },
+    {
+      "status": "info",
+      "category": "Config",
+      "message": "datacenter: IND",
+      "details": null,
+      "timestamp": "2026-01-20T13:38:41.099931"
+    },
+    {
+      "status": "info",
+      "category": "Config",
+      "message": "bundle_type: sales360",
+      "details": null,
+      "timestamp": "2026-01-20T13:38:41.099931"
+    },
+    {
+      "status": "info",
+      "category": "Config",
+      "message": "plan_type: Sales360 Messaging Enterprise Yearly 2020",
+      "details": null,
+      "timestamp": "2026-01-20T13:38:41.099931"
+    },
+    {
+      "status": "pass",
+      "category": "Bundle",
+      "message": "Account is part of Freshworks bundle (ID: 932159070187740824)",
+      "details": {
+        "bundle_type": "sales360"
+      },
+      "timestamp": "2026-01-20T13:38:41.099931"
+    },
+    {
+      "status": "pass",
+      "category": "Channels",
+      "message": "Found 2 channel(s)",
+      "details": null,
+      "timestamp": "2026-01-20T13:38:41.251878"
+    },
+    {
+      "status": "pass",
+      "category": "Agents",
+      "message": "Found 1 agent(s)",
+      "details": null,
+      "timestamp": "2026-01-20T13:38:41.370188"
+    },
+    {
+      "status": "pass",
+      "category": "Freshdesk",
+      "message": "API connection successful",
+      "details": null,
+      "timestamp": "2026-01-20T13:38:41.555387"
+    },
+    {
+      "status": "pass",
+      "category": "CustomFields",
+      "message": "Found 4/5 required fields",
+      "details": null,
+      "timestamp": "2026-01-20T13:38:41.811604"
+    },
+    {
+      "status": "warn",
+      "category": "CustomFields",
+      "message": "Missing 1 fields (may need to create)",
+      "details": null,
+      "timestamp": "2026-01-20T13:38:41.811604"
+    },
+    {
+      "status": "pass",
+      "category": "UserLookup",
+      "message": "User found: Rahul Sharma",
+      "details": {
+        "email": "syed.ashfaque@craftmyplate.com",
+        "id": "a5f651e9-eeb4-4d..."
+      },
+      "timestamp": "2026-01-20T13:38:42.021379"
+    },
+    {
+      "status": "pass",
+      "category": "Conversation",
+      "message": "Conversation accessible",
+      "details": {
+        "status": "new",
+        "id": "c2231702-1cf1-46..."
+      },
+      "timestamp": "2026-01-20T13:38:42.503008"
+    },
+    {
+      "status": "pass",
+      "category": "Tickets",
+      "message": "Found 5 ticket(s) for syed.ashfaque@craftmyplate.com",
+      "details": null,
+      "timestamp": "2026-01-20T13:38:42.802602"
+    }
+  ],
+  "summary": {
+    "passed": 13,
+    "failed": 0,
+    "warnings": 1
+  }
+}
